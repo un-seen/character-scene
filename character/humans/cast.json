@@ -1,0 +1,158 @@
+{
+ "sam": {
+  "name": "Sam",
+  "phenotype": {
+   "gender": 1.0,
+   "age": 0.5,
+   "muscle": 0.55,
+   "weight": 0.5,
+   "proportions": 0.6,
+   "height": 0.6,
+   "cupsize": 0.5,
+   "firmness": 0.5,
+   "race": {
+    "african": 0.85,
+    "asian": 0.05,
+    "caucasian": 0.1
+   }
+  },
+  "skin": "young_african_male/young_african_male.mhmat",
+  "eyebrows": "eyebrow001/eyebrow001.mhclo",
+  "eyelashes": "eyelashes01/eyelashes01.mhclo",
+  "hair": "afro01/afro01.mhclo",
+  "clothes": [
+   "male_casualsuit01/male_casualsuit01.mhclo",
+   "shoes06/shoes06.mhclo"
+  ]
+ },
+ "maya": {
+  "name": "Maya",
+  "phenotype": {
+   "gender": 0.0,
+   "age": 0.45,
+   "muscle": 0.55,
+   "weight": 0.45,
+   "proportions": 0.6,
+   "height": 0.9,
+   "cupsize": 0.45,
+   "firmness": 0.6,
+   "race": {
+    "african": 0.05,
+    "asian": 0.8,
+    "caucasian": 0.15
+   }
+  },
+  "skin": "young_asian_female/young_asian_female.mhmat",
+  "eyebrows": "eyebrow010/eyebrow010.mhclo",
+  "eyelashes": "eyelashes02/eyelashes02.mhclo",
+  "hair": "ponytail01/ponytail01.mhclo",
+  "clothes": [
+   "female_casualsuit01/female_casualsuit01.mhclo",
+   "shoes05/shoes05.mhclo"
+  ]
+ },
+ "leo": {
+  "name": "Leo",
+  "phenotype": {
+   "gender": 1.0,
+   "age": 0.5,
+   "muscle": 0.55,
+   "weight": 0.5,
+   "proportions": 0.6,
+   "height": 0.65,
+   "cupsize": 0.5,
+   "firmness": 0.5,
+   "race": {
+    "african": 0.05,
+    "asian": 0.05,
+    "caucasian": 0.9
+   }
+  },
+  "skin": "young_caucasian_male/young_caucasian_male.mhmat",
+  "eyebrows": "eyebrow002/eyebrow002.mhclo",
+  "eyelashes": "eyelashes01/eyelashes01.mhclo",
+  "hair": "short02/short02.mhclo",
+  "clothes": [
+   "male_casualsuit06/male_casualsuit06.mhclo",
+   "shoes01/shoes01.mhclo"
+  ]
+ },
+ "ana": {
+  "name": "Ana",
+  "phenotype": {
+   "gender": 0.0,
+   "age": 0.48,
+   "muscle": 0.5,
+   "weight": 0.45,
+   "proportions": 0.6,
+   "height": 0.75,
+   "cupsize": 0.5,
+   "firmness": 0.5,
+   "race": {
+    "african": 0.05,
+    "asian": 0.05,
+    "caucasian": 0.9
+   }
+  },
+  "skin": "young_caucasian_female/young_caucasian_female.mhmat",
+  "eyebrows": "eyebrow011/eyebrow011.mhclo",
+  "eyelashes": "eyelashes02/eyelashes02.mhclo",
+  "hair": "long01/long01.mhclo",
+  "clothes": [
+   "female_elegantsuit01/female_elegantsuit01.mhclo",
+   "shoes03/shoes03.mhclo"
+  ]
+ },
+ "kenji": {
+  "name": "Kenji",
+  "phenotype": {
+   "gender": 1.0,
+   "age": 0.5,
+   "muscle": 0.5,
+   "weight": 0.45,
+   "proportions": 0.6,
+   "height": 0.55,
+   "cupsize": 0.5,
+   "firmness": 0.5,
+   "race": {
+    "african": 0.05,
+    "asian": 0.9,
+    "caucasian": 0.05
+   }
+  },
+  "skin": "young_asian_male/young_asian_male.mhmat",
+  "eyebrows": "eyebrow003/eyebrow003.mhclo",
+  "eyelashes": "eyelashes01/eyelashes01.mhclo",
+  "hair": "short01/short01.mhclo",
+  "clothes": [
+   "male_casualsuit05/male_casualsuit05.mhclo",
+   "shoes02/shoes02.mhclo"
+  ]
+ },
+ "zoe": {
+  "name": "Zoe",
+  "phenotype": {
+   "gender": 0.0,
+   "age": 0.45,
+   "muscle": 0.55,
+   "weight": 0.45,
+   "proportions": 0.6,
+   "height": 0.8,
+   "cupsize": 0.5,
+   "firmness": 0.5,
+   "race": {
+    "african": 0.9,
+    "asian": 0.05,
+    "caucasian": 0.05
+   }
+  },
+  "skin": "young_african_female/young_african_female.mhmat",
+  "eyebrows": "eyebrow009/eyebrow009.mhclo",
+  "eyelashes": "eyelashes02/eyelashes02.mhclo",
+  "hair": "braid01/braid01.mhclo",
+  "clothes": [
+   "female_sportsuit01/female_sportsuit01.mhclo",
+   "shoes05/shoes05.mhclo"
+  ]
+ }
+}

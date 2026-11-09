@@ -1,0 +1,9 @@
+{
+  "plan": "Adversarial: stand still but drag the left foot 20 cm forward along the floor. The checker must fail it.",
+  "clip": {"fps": 24, "frames": 72, "seed": 1},
+  "beats": [{"id": "i", "verb": "idle", "start": 0, "dur": 72}],
+  "keys": [
+    {"ctrl": "foot_ik.L", "ch": "loc", "f": 10, "v": [0, 0, 0], "mode": "add"},
+    {"ctrl": "foot_ik.L", "ch": "loc", "f": 50, "v": [0, -0.2, 0], "mode": "add", "hold": true}
+  ]
+}

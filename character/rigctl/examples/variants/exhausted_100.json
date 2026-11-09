@@ -1,0 +1,73 @@
+{
+ "plan": "A exhausted person at strength 1.0: walks 2.4 m, then stands.",
+ "clip": {
+  "fps": 24,
+  "frames": 222,
+  "seed": 21,
+  "variation": 0.3
+ },
+ "beats": [
+  {
+   "id": "w",
+   "verb": "walk",
+   "start": 0,
+   "args": {
+    "distance": 2.4
+   }
+  },
+  {
+   "id": "i",
+   "verb": "idle",
+   "after": "w",
+   "dur": 48
+  }
+ ],
+ "primitives": [
+  {
+   "beat": "w",
+   "type": "gait",
+   "params": {
+    "speed_ms": 0.45,
+    "cadence_spm": 72.0,
+    "lift_cm": 2.5,
+    "arm_swing": 0.2,
+    "hip_bob_cm": 0.6,
+    "sway_cm": 4.2,
+    "heel_up_deg": 6.0,
+    "toe_off_deg": 15.0,
+    "lean_deg": 10.0,
+    "spine_curve_deg": 30.0,
+    "shoulder_drop_deg": 22.0,
+    "shoulder_fwd_deg": 26.0,
+    "head_drop_deg": 22.0,
+    "elbow_bend_deg": 5.0,
+    "lid_droop": 0.35,
+    "brow_knit": 0.6,
+    "jaw_slack": 0.3,
+    "breath_depth": 3.0,
+    "blink_rate_pm": 10.0,
+    "blink_len": 1.8,
+    "finger_curl": 0.15
+   }
+  },
+  {
+   "beat": "i",
+   "type": "style",
+   "params": {
+    "lean_deg": 10.0,
+    "spine_curve_deg": 30.0,
+    "shoulder_drop_deg": 22.0,
+    "shoulder_fwd_deg": 26.0,
+    "head_drop_deg": 22.0,
+    "elbow_bend_deg": 5.0,
+    "lid_droop": 0.35,
+    "brow_knit": 0.6,
+    "jaw_slack": 0.3,
+    "breath_depth": 3.0,
+    "blink_rate_pm": 10.0,
+    "blink_len": 1.8,
+    "finger_curl": 0.15
+   }
+  }
+ ]
+}

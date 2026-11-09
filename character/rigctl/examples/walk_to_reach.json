@@ -1,0 +1,11 @@
+{
+  "plan": "Turn toward the table, walk there, look at the cup, then reach for it with the right hand and make a grip.",
+  "clip": {"fps": 24, "frames": 192, "seed": 11, "variation": 0.4},
+  "beats": [
+    {"id": "go", "verb": "walk_to", "start": 0, "args": {"target": [1.2, -2.2], "mood": "confident"}},
+    {"id": "look", "verb": "look_at", "after": "go", "dur": 44, "args": {"target": [1.55, -2.75, 0.95]}},
+    {"id": "reach", "verb": "reach", "after": "go", "dur": 24, "args": {"side": "R", "target": [1.15, -2.55, 1.05], "hold": 12}},
+    {"id": "grip", "verb": "hand", "after": "go", "dur": 40, "args": {"side": "R", "shape": "grip"}},
+    {"id": "glad", "verb": "express", "after": "go", "dur": 40, "args": {"keys": {"smile": 0.5, "brows_up": 0.3}}}
+  ]
+}

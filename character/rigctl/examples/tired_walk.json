@@ -1,0 +1,9 @@
+{
+  "plan": "A tired walk of three metres, a small smile on arrival, hands relaxed.",
+  "clip": {"fps": 24, "frames": 210, "seed": 3, "variation": 0.3},
+  "beats": [
+    {"id": "w", "verb": "walk", "start": 0, "args": {"distance": 3.0, "mood": "tired"}},
+    {"id": "s", "verb": "express", "after": "w", "dur": 30, "args": {"keys": {"smile": 0.7}, "onset": 8, "offset": 10}},
+    {"id": "i", "verb": "idle", "after": "w", "dur": 30}
+  ]
+}

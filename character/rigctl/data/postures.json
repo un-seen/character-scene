@@ -1,0 +1,394 @@
+{
+ "about": "Postures (rigctl/compiler.py posture): each control's local transform, rot in degrees (Euler XYZ from rest), loc in metres; root's are applied on top of where the body stands. Authored on the rig body in Blender (posetool.py), 2026-10-31: the hips and knees, seat, back and heels resting on the floor within a few millimetres. Redone 2026-10-31 to the human ranges (anatomy.py): the elbows bend on their hinge (Z), the sitting pelvis rolls back and the low back rounds.",
+ "crouch": {
+  "torso": {
+   "loc": [
+    0,
+    0.16,
+    -0.5
+   ],
+   "rot": [
+    30,
+    0,
+    0
+   ]
+  },
+  "chest": {
+   "rot": [
+    6,
+    0,
+    0
+   ]
+  },
+  "neck": {
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  "head": {
+   "rot": [
+    4,
+    0,
+    0
+   ]
+  },
+  "thigh_ik_target.L": {
+   "loc": [
+    0.12,
+    -0.4,
+    0
+   ]
+  },
+  "thigh_ik_target.R": {
+   "loc": [
+    -0.12,
+    -0.4,
+    0
+   ]
+  },
+  "upper_arm_fk.L": {
+   "rot": [
+    -70,
+    0,
+    -60
+   ]
+  },
+  "upper_arm_fk.R": {
+   "rot": [
+    -70,
+    0,
+    60
+   ]
+  },
+  "forearm_fk.L": {
+   "rot": [
+    0,
+    0,
+    -40
+   ]
+  },
+  "forearm_fk.R": {
+   "rot": [
+    0,
+    0,
+    40
+   ]
+  },
+  "hips": {
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  }
+ },
+ "kneel": {
+  "torso": {
+   "loc": [
+    0,
+    0.02,
+    -0.54
+   ],
+   "rot": [
+    -4,
+    0,
+    0
+   ]
+  },
+  "neck": {
+   "rot": [
+    -2,
+    0,
+    0
+   ]
+  },
+  "head": {
+   "rot": [
+    -3,
+    0,
+    0
+   ]
+  },
+  "foot_ik.L": {
+   "loc": [
+    0,
+    0.5,
+    0.07
+   ],
+   "rot": [
+    90,
+    0,
+    0
+   ]
+  },
+  "foot_ik.R": {
+   "loc": [
+    0,
+    0.5,
+    0.07
+   ],
+   "rot": [
+    90,
+    0,
+    0
+   ]
+  },
+  "thigh_ik_target.L": {
+   "loc": [
+    0.1,
+    -0.6,
+    -0.4
+   ]
+  },
+  "thigh_ik_target.R": {
+   "loc": [
+    -0.1,
+    -0.6,
+    -0.4
+   ]
+  },
+  "upper_arm_fk.L": {
+   "rot": [
+    -75,
+    0,
+    -10
+   ]
+  },
+  "upper_arm_fk.R": {
+   "rot": [
+    -75,
+    0,
+    10
+   ]
+  },
+  "forearm_fk.L": {
+   "rot": [
+    0,
+    0,
+    -15
+   ]
+  },
+  "forearm_fk.R": {
+   "rot": [
+    0,
+    0,
+    15
+   ]
+  },
+  "toe_ik.L": {
+   "rot": [
+    -60,
+    0,
+    0
+   ]
+  },
+  "toe_ik.R": {
+   "rot": [
+    -60,
+    0,
+    0
+   ]
+  },
+  "hips": {
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  }
+ },
+ "sit": {
+  "torso": {
+   "loc": [
+    0,
+    0.24,
+    -0.91
+   ],
+   "rot": [
+    10,
+    0,
+    0
+   ]
+  },
+  "chest": {
+   "rot": [
+    20,
+    0,
+    0
+   ]
+  },
+  "neck": {
+   "rot": [
+    -4,
+    0,
+    0
+   ]
+  },
+  "head": {
+   "rot": [
+    -6,
+    0,
+    0
+   ]
+  },
+  "foot_ik.L": {
+   "loc": [
+    0.03,
+    -0.5,
+    0.16
+   ],
+   "rot": [
+    -70,
+    0,
+    0
+   ]
+  },
+  "thigh_ik_target.L": {
+   "loc": [
+    0.1,
+    -0.4,
+    0.6
+   ]
+  },
+  "upper_arm_fk.L": {
+   "rot": [
+    -70,
+    0,
+    45
+   ]
+  },
+  "forearm_fk.L": {
+   "rot": [
+    -10,
+    0,
+    0
+   ]
+  },
+  "hand_fk.L": {
+   "rot": [
+    -60,
+    0,
+    0
+   ]
+  },
+  "foot_ik.R": {
+   "loc": [
+    -0.03,
+    -0.5,
+    0.16
+   ],
+   "rot": [
+    -70,
+    0,
+    0
+   ]
+  },
+  "thigh_ik_target.R": {
+   "loc": [
+    -0.1,
+    -0.4,
+    0.6
+   ]
+  },
+  "upper_arm_fk.R": {
+   "rot": [
+    -70,
+    0,
+    -45
+   ]
+  },
+  "forearm_fk.R": {
+   "rot": [
+    -10,
+    0,
+    0
+   ]
+  },
+  "hand_fk.R": {
+   "rot": [
+    -60,
+    0,
+    0
+   ]
+  },
+  "hips": {
+   "rot": [
+    -20,
+    0,
+    0
+   ]
+  }
+ },
+ "lie": {
+  "root": {
+   "loc": [
+    0,
+    -0.69,
+    0.152
+   ],
+   "rot": [
+    -90,
+    0,
+    0
+   ]
+  },
+  "head": {
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  "upper_arm_fk.L": {
+   "rot": [
+    -78,
+    0,
+    0
+   ]
+  },
+  "forearm_fk.L": {
+   "rot": [
+    -8,
+    0,
+    0
+   ]
+  },
+  "upper_arm_fk.R": {
+   "rot": [
+    -78,
+    0,
+    0
+   ]
+  },
+  "forearm_fk.R": {
+   "rot": [
+    -8,
+    0,
+    0
+   ]
+  },
+  "foot_ik.L": {
+   "loc": [
+    0,
+    -0.09,
+    0
+   ]
+  },
+  "foot_ik.R": {
+   "loc": [
+    0,
+    -0.09,
+    0
+   ]
+  },
+  "hips": {
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  }
+ }
+}

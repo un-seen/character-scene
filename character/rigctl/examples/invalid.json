@@ -1,0 +1,10 @@
+{
+  "plan": "Errors on purpose: an unknown control, an out-of-range angle, a bad verb and a missing target.",
+  "clip": {"fps": 24, "frames": 48},
+  "beats": [{"verb": "dance"}, {"verb": "walk_to", "args": {}}],
+  "keys": [
+    {"ctrl": "tail", "ch": "rot", "f": 10, "v": [0, 0, 0]},
+    {"ctrl": "head", "ch": "rot", "f": 10, "v": [0, 0, 400]},
+    {"ctrl": "smile", "f": 99, "v": 2}
+  ]
+}

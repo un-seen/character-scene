@@ -1,0 +1,16 @@
+{
+  "plan": "Stand, then tilt the head to the left and back, lift the chest, point with the left hand, and hold a frown.",
+  "clip": {"fps": 24, "frames": 96, "seed": 5, "variation": 0.2},
+  "beats": [{"id": "i", "verb": "idle", "start": 0, "dur": 96}],
+  "keys": [
+    {"ctrl": "head", "ch": "rot", "f": 20, "v": [0, 0, 0]},
+    {"ctrl": "head", "ch": "rot", "f": 44, "v": [-10, 0, 18], "pin": true},
+    {"ctrl": "head", "ch": "rot", "f": 70, "v": [0, 0, 0]},
+    {"ctrl": "chest", "ch": "rot", "f": 30, "v": [-6, 0, 0], "mode": "add", "hold": true},
+    {"ctrl": "f_index.L", "ch": "curl", "f": 40, "v": 0.0},
+    {"ctrl": "f_middle.L", "ch": "curl", "f": 40, "v": 1.0},
+    {"ctrl": "f_ring.L", "ch": "curl", "f": 40, "v": 1.0},
+    {"ctrl": "f_pinky.L", "ch": "curl", "f": 40, "v": 1.0},
+    {"ctrl": "frown", "f": 50, "v": 0.9, "hold": true}
+  ]
+}

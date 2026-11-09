@@ -1,0 +1,19 @@
+{
+ "character": {
+  "height_m": 1.786,
+  "eye_m": 1.689,
+  "chest_m": 1.279,
+  "waist_m": 1.102,
+  "shoulder_m": 1.403,
+  "arm_m": 0.499,
+  "leg_m": 0.99,
+  "shoulder_half_m": 0.184,
+  "face": [
+   "blink",
+   "smile",
+   "brows_up",
+   "frown",
+   "jaw_open"
+  ]
+ }
+}

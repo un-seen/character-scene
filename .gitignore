@@ -1,0 +1,15 @@
+__pycache__/
+bundle/
+bundle.py
+# the rig and what is measured on it are not published (see README: What you supply)
+character/out/*.blend
+chars/*.glb
+character/rigctl/data/fk.json
+character/rigctl/data/registry.json
+character/rigctl/data/posecat.json
+character/rigctl/data/face_keys.json
+character/rigctl/data/run_cycle.json
+character/rigctl/data/pose_cache/
+character/rigctl/data/*_cache.json
+.claude/
+deploy.local.sh
