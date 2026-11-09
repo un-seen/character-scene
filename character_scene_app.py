@@ -406,7 +406,9 @@ def smoke(steps: int = 3, account: str = "smoke-test"):
     t0 = time.time()
     sc = post("/scenes", situation="They meet at a bus stop in the rain.", characters=[{"character": "leo", "name": "Omar"}], tz_minutes=330)
     sid = sc["id"]; print("created", sid, [(m["character"], m["name"]) for m in sc["cast"]])
-    print("add maya:", [(m["character"], m["push"]) for m in post(f"/scenes/{sid}/cast", character="maya", personality="hostile", dose=0.75)["cast"]])
+    added = post(f"/scenes/{sid}/cast", character="maya", personality="L14N8949+", dose=0.75)
+    print("add maya:", [(m["character"], m["push"]) for m in added["cast"]] if "cast" in added else added)
+    if "cast" not in added: return
     print("start:", post(f"/scenes/{sid}/start", allowance_s=1200)["state"])
     seen = 0
     while seen < steps and time.time() - t0 < 1500:

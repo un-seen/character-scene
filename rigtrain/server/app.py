@@ -289,7 +289,7 @@ def say_item(it, time_):
     what choices needs kept on the item."""
     ch, push = it.get("character"), it.get("push") or None
     if ch not in CHARACTERS: raise ValueError(f"unknown character {ch!r}")
-    if push and push not in PUSHES: raise ValueError(f"unknown push {push!r}")
+    if push and not push_ok(push): raise ValueError(f"unknown push {push!r}")
     member = {"push": push, "dose": float(it.get("dose", 1.0)) if push else 0.0}
     me, others = str(it.get("name") or "").strip() or ch, [str(n) for n in it.get("others") or []]
     heard = [str(n) for n in it.get("heard") or [] if str(n) in others]
@@ -441,7 +441,7 @@ class H(BaseHTTPRequestHandler):
             dose = float(it.get("dose", 1.0)) if push else 0.0
             text = str(it.get("text") or "").strip()
             if ch not in CHARACTERS: return self.send(400, {"error": f"unknown character {ch!r}"})
-            if push and push not in PUSHES: return self.send(400, {"error": f"unknown push {push!r}"})
+            if push and not push_ok(push): return self.send(400, {"error": f"unknown push {push!r}"})
             if push and not 0.5 <= dose <= 1.5: return self.send(400, {"error": "dose must be 0.5–1.5"})
             # qwen-animate reads the record's last lines, and a strong push writes long ones: 4000
             # characters is ~1000 tokens, which leaves its 3072 the program's 900 and the system prompt

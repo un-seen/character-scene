@@ -35,3 +35,9 @@ PUSHES = {
 CALIB = ["What's the best way to learn a new language?", "Can you recommend a book to read?",
          "How do I fix a flat bicycle tyre?", "What do you think about the weather today?",
          "Should I get a cat or a dog?", "How does the internet work?"]
+
+
+def push_ok(push):
+    """A push the engine takes: one of PUSHES, or any neuron written L<layer>N<neuron><+|->."""
+    from vsteer import custom_push
+    return push in PUSHES or custom_push(push) is not None

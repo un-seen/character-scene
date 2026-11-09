@@ -41,7 +41,8 @@ os.environ.setdefault("VLLM_USE_V2_MODEL_RUNNER", "0")
 
 import itertools  # noqa: E402
 import types  # noqa: E402
-import json  # noqa: E402
+import json
+import re  # noqa: E402
 import time  # noqa: E402
 
 import numpy as np  # noqa: E402
@@ -55,6 +56,18 @@ from vllm.utils.torch_utils import direct_register_custom_op  # noqa: E402
 
 MODEL = "Qwen/Qwen3.5-4B"
 CATALOG = {}                                          # layer -> [neuron, ...], set before the engine is built
+SPARE = 2                                             # columns on every layer for pushes outside the catalog
+LAYERS, NEURONS = 32, 9216                            # Qwen3.5-4B
+CUSTOM = re.compile(r"L(\d{1,2})N(\d{1,4})([+-])")
+
+
+def custom_push(push):
+    """(layer, neuron, sign) of a push written as L<layer>N<neuron><+|->, or None."""
+    m = CUSTOM.fullmatch(push or "")
+    if not m: return None
+    L, n = int(m[1]), int(m[2])
+    if not (0 <= L < LAYERS and 0 <= n < NEURONS): return None
+    return L, n, 1 if m[3] == "+" else -1
 _ids = itertools.count()
 
 _init = Q.Qwen3_5DecoderLayer.__init__
@@ -148,6 +161,10 @@ class VSteered:
         for L, n, _ in pushes.values():
             CATALOG.setdefault(L, [])
             if n not in CATALOG[L]: CATALOG[L].append(n)
+        self.catalog_cols = {L: len(v) for L, v in CATALOG.items()}
+        for L in range(LAYERS): CATALOG.setdefault(L, []).extend([0] * SPARE)
+        self.cols = {(L, n): k for L, v in CATALOG.items() for k, n in enumerate(v[:self.catalog_cols.get(L, 0)])}
+        self.spare_next = {L: 0 for L in range(LAYERS)}   # the spare column a new custom push takes next (round robin)
         self.llm = LLM(adapter, tokenizer=MODEL, quantization="fp8", enable_lora=True, max_lora_rank=64,
                        max_model_len=max_model_len, gpu_memory_utilization=gpu_memory_utilization,
                        max_num_seqs=max_num_seqs, limit_mm_per_prompt={"image": 0, "video": 0},
@@ -159,12 +176,12 @@ class VSteered:
         self.cuda_stream = torch.cuda.current_stream()
         self.runner = _runner(self.llm)
         self.layers, self.norms = {}, {}
-        base = _base_down(sorted(CATALOG))
+        base = _base_down(sorted(self.catalog_cols))
         for name, mod in self.runner.model.named_modules():
             if hasattr(mod, "steer_cols"):
                 L = mod.steer_layer; self.layers[L] = mod
-                W = base[L]
-                for k, n in enumerate(CATALOG[L]):
+                W = base.get(L)
+                for k, n in enumerate(CATALOG[L][:self.catalog_cols.get(L, 0)]):
                     col = W[:, n].detach().to(mod.steer_cols.device)
                     mod.steer_cols[k].copy_(col.to(mod.steer_cols.dtype))
                     self.norms[L, n] = col.float().norm().item()
@@ -189,8 +206,28 @@ class VSteered:
 
     TOP = 20                                          # vLLM's most logprobs a token (its max_logprobs)
 
+    def resolve(self, push):
+        """(layer, neuron, sign) of a push: a catalog name, or L<layer>N<neuron><+|-> (its column
+        loaded into a spare one on its layer the first time)."""
+        if push in self.pushes: return self.pushes[push]
+        c = custom_push(push)
+        if not c: raise ValueError(f"unknown push {push!r}")
+        L, n, sign = c
+        if (L, n) not in self.cols:
+            k = self.catalog_cols.get(L, 0) + self.spare_next[L]
+            self.spare_next[L] = (self.spare_next[L] + 1) % SPARE
+            for key in [x for x, v in self.cols.items() if x[0] == L and v == k]: del self.cols[key]   # the push it held
+            col = _base_down([L])[L][:, n].detach()
+            mod = self.layers[L]
+            with torch.cuda.stream(self.cuda_stream):
+                mod.steer_cols[k].copy_(col.to(mod.steer_cols.device, mod.steer_cols.dtype))
+                mod.mlp.steer_idx[k] = n
+            self.norms[L, n] = col.float().norm().item()
+            self.cols[L, n] = k
+        return L, n, sign
+
     def amount(self, push, dose):
-        L, n, sign = self.pushes[push]
+        L, n, sign = self.resolve(push)
         return sign * dose * self.median[L] / self.norms[L, n]
 
     def _fill(self, positions):
@@ -220,7 +257,7 @@ class VSteered:
                     if self._gate(rid, st): g[:] = 1
                 c = self.coef[L]
                 if L not in touched: c[:T] = 0; touched.add(L)
-                c[a:b, CATALOG[L].index(n)] = g * amount
+                c[a:b, self.cols[L, n]] = g * amount
         for L in touched:
             self.layers[L].steer_coef[:T].copy_(torch.from_numpy(self.coef[L][:T]))
         for L in self.dirty - touched:                    # clear what an earlier step left
@@ -292,7 +329,7 @@ class VSteered:
 
     def _terms(self, m):
         if not m.get("push"): return None
-        L, n, sign = self.pushes[m["push"]]
+        L, n, sign = self.resolve(m["push"])
         return {"layer": L, "neuron": n, "sign": sign, "dose": m["dose"], "amount": round(self.amount(m["push"], m["dose"]), 3)}
 
     def _chat(self, system, user):
@@ -309,7 +346,7 @@ class VSteered:
         params = []
         for r in rows:
             m = members[r]
-            push = [*self.pushes[m["push"]][:2], self.amount(m["push"], m["dose"]), "all"] if m.get("push") else None
+            push = [*self.resolve(m["push"])[:2], self.amount(m["push"], m["dose"]), "all"] if m.get("push") else None
             params.append(SamplingParams(n=n, max_tokens=160, temperature=SAY_TEMP, top_p=0.95, repetition_penalty=1.05, seed=seed,
                                          structured_outputs=StructuredOutputsParams(grammar=grammars[r]),
                                          extra_args={"push": push}))
@@ -333,7 +370,7 @@ class VSteered:
         for ctx, cont, m in rows:
             c_ids = self.tok(ctx, add_special_tokens=False)["input_ids"]
             enc = self.tok(cont, add_special_tokens=False, return_offsets_mapping=True)
-            push = [*self.pushes[m["push"]][:2], self.amount(m["push"], m["dose"]), "all"] if m.get("push") else None
+            push = [*self.resolve(m["push"])[:2], self.amount(m["push"], m["dose"]), "all"] if m.get("push") else None
             for p in ((push, None) if push else (None,)):
                 prompts.append(TokensPrompt(prompt_token_ids=c_ids + enc["input_ids"]))
                 params.append(SamplingParams(max_tokens=1, temperature=0, prompt_logprobs=self.TOP, detokenize=False,
@@ -365,7 +402,7 @@ class VSteered:
         each member's program is finished. system is one prompt for all, or one per member."""
         params = []
         for m in members:
-            push = [*self.pushes[m["push"]][:2], self.amount(m["push"], m["dose"]), "attitude"] if m.get("push") else None
+            push = [*self.resolve(m["push"])[:2], self.amount(m["push"], m["dose"]), "attitude"] if m.get("push") else None
             params.append(SamplingParams(max_tokens=900, temperature=0,
                                          structured_outputs=StructuredOutputsParams(grammar=grammar),
                                          extra_args={"push": push}))

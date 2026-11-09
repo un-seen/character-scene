@@ -45,6 +45,18 @@ PUSHES = ["flattering", "contemptuous", "poetic", "upbeat", "suspicious", "conde
           "oracle", "bleak", "dismissive", "ornate", "curt", "hostile"]
 
 
+LAYERS, NEURONS = 32, 9216                          # Qwen3.5-4B
+CUSTOM = re.compile(r"L(\d{1,2})N(\d{1,4})([+-])")
+
+
+def custom_push(push):
+    """(layer, neuron, sign) of a push written L<layer>N<neuron><+|-> (any neuron, pushed up or
+    down), or None; the engine takes it as it takes a catalog one (vsteer.custom_push)."""
+    m = CUSTOM.fullmatch(push or "")
+    if not m or not (0 <= int(m[1]) < LAYERS and 0 <= int(m[2]) < NEURONS): return None
+    return int(m[1]), int(m[2]), 1 if m[3] == "+" else -1
+
+
 def goes(v): return v in ("walks to", "runs to")
 
 
@@ -289,9 +301,12 @@ def set_look(scene, character, look):
 
 def set_personality(m, push, dose=1.0):
     """A character's push (a persona neuron) and its dose, or none: the model as it is."""
-    push = (push or "").strip().lower() or None
+    push = (push or "").strip() or None
+    if push and push.lower() in PUSHES + ["none", "neutral", "off"]: push = push.lower()
     if push in ("none", "neutral", "off"): push = None
-    if push and push not in PUSHES: raise ValueError(f"unknown personality {push!r}: one of {', '.join(PUSHES)}, or none")
+    if push and push not in PUSHES and not custom_push(push):
+        raise ValueError(f"unknown personality {push!r}: one of {', '.join(PUSHES)}, a neuron as L<layer>N<neuron><+|-> "
+                         f"(layer 0-{LAYERS - 1}, neuron 0-{NEURONS - 1}), or none")
     dose = float(dose if dose is not None else 1.0)
     if push and not 0.5 <= dose <= 1.5: raise ValueError("dose must be 0.5 to 1.5")
     m["push"], m["dose"] = push, (dose if push else 1.0)
@@ -362,6 +377,9 @@ def step(scene, backend, clip_url=lambda step_n, k, m: m.get("glb")):
                         "error": (jm.get("error") or "")[-300:] or None,
                         "clip": clip_url(n, k, jm) if ok else None, "frames": jm.get("frames"), "fps": jm.get("fps"),
                         "end_yaw": jm.get("end_yaw"),
+                        # the program's beats (verb, start and end frame), for the page's timeline lanes, and
+                        # when this one moved in the step (the speakers' lines play in this order)
+                        "timeline": jm.get("timeline") if ok else None, "order": said["order"].index(k),
                         "checks_failed": [x for x, v in (jm.get("checks") or {}).items() if not v.get("pass")]})
         if ok: c["pos"], c["yaw"] = list(ends[k]["pos"]), ends[k]["yaw"]
     s = {"n": n, "prompt": prompt, "members": members, "t_say": said["seconds"],
