@@ -281,8 +281,22 @@ def api():
         sid = uuid.uuid4().hex[:12]
         sc = S.new_scene(sid, b.get("situation", ""), b.get("tz_minutes", 0))
         sc.update(owner=b["account"], clip_key=secrets.token_urlsafe(12), used_s=0.0, loop=None)
-        for c in (b.get("characters") or [])[:S.MAX_CAST]:
-            run_edit(lambda: _apply(sc, {"op": "add", **(c if isinstance(c, dict) else {"character": c})}))
+        chars = [c if isinstance(c, dict) else {"character": c} for c in (b.get("characters") or [])[:S.MAX_CAST]]
+        if isinstance(b.get("seed"), dict):
+            # going on from a scene already made: its cast and turns, then the caller's names, looks and pushes by place
+            run_edit(lambda: S.seed_from(sc, b["seed"]))
+            for m, c in zip(list(sc["cast"]), chars):
+                for e in ({"op": "look", "character": m["character"], "look": c.get("character")},
+                          {"op": "rename", "character": c.get("character") or m["character"], "name": c.get("name")},
+                          {"op": "personality", "character": c.get("character") or m["character"],
+                           "personality": c.get("personality"), "dose": c.get("dose", 1.0)}):
+                    try:
+                        if e.get("look") and e["look"] != m["character"] or e["op"] == "personality" or (e.get("name") and e["name"] != m["name"]):
+                            _apply(sc, e)
+                    except ValueError: pass
+        else:
+            for c in chars:
+                run_edit(lambda: _apply(sc, {"op": "add", **c}))
         scenes[sid] = sc; scenes["acct:" + b["account"]] = mine + [sid]
         touch(sid, 0.0, "paused")
         return view(sc)

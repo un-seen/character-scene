@@ -312,6 +312,39 @@ def set_personality(m, push, dose=1.0):
     m["push"], m["dose"] = push, (dose if push else 1.0)
 
 
+MAX_SEED_STEPS = 60
+
+
+def seed_from(scene, seed):
+    """A scene that goes on from one already made (a prerendered sample): its cast where they ended,
+    its steps (clips and all) and the record of what was said, rebuilt from the steps, so the next
+    step answers what came before. The steps it starts with are not counted as animation made."""
+    for m in (seed.get("cast") or [])[:MAX_CAST]:
+        c = add_character(scene, m["character"], m.get("push"), m.get("dose", 1.0), m.get("name"))
+        if m.get("pos"): c["pos"] = [float(m["pos"][0]), float(m["pos"][1])]
+        c["yaw"] = float(m.get("yaw") or 0.0)
+    steps = [st for st in (seed.get("steps") or [])[:MAX_SEED_STEPS] if st.get("members")]
+    log, sid = [], 0
+    for st in steps:
+        ms = st["members"]
+        names = [m.get("name", "") for m in ms]
+        for k in sorted(range(len(ms)), key=lambda k: ms[k].get("order", k)):
+            m = ms[k]; sid += 1
+            others = [n for n in names if n != m.get("name")]
+            e = {"sid": sid, "slot": k, "who": m.get("name", ""), "kind": m.get("kind", "listen"),
+                 "to": m.get("to") or others[:1], "text": m.get("says", ""), "act": m.get("act", "")}
+            if e["kind"] == "speak": e["next"] = others[0] if others else None
+            if m.get("feel"): e["feel"] = m["feel"]
+            log.append(e)
+    if steps:                                                # each one stands where the last step left it
+        for c, m in zip(scene["cast"], steps[-1]["members"]):
+            end = m.get("end") or {}
+            if end.get("pos"): c["pos"] = [float(end["pos"][0]), float(end["pos"][1])]
+            if end.get("yaw") is not None: c["yaw"] = float(end["yaw"])
+    scene.update(steps=steps, log=log, sid=sid, anim_s=0.0, seeded=len(steps))
+    return scene
+
+
 def _say_sequence(scene, backend, prompt):
     """qwen-say one character at a time; the first to move is the one the newest line wants to
     answer; the step's first move and the one the newest line wants to answer may speak, anyone else
